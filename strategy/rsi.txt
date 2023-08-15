@@ -1,0 +1,35 @@
+//@version=5 
+strategy(title="RSI Strategy", overlay=false, shorttitle="RSI", initial_capital = 10000, 
+     default_qty_type = strategy.percent_of_equity, default_qty_value = 100) 
+
+rsi_period = input(14, title="RSI Period") 
+
+rsi_oversold = input(30, title="RSI Oversold Threshold") 
+rsi_overbought = input(70, title="RSI Overbought Threshold") 
+ 
+tradeLong = input(true, title="Trade Long") 
+tradeShort = input(false, title="Trade Short") 
+ 
+rsi_value = ta.rsi(close, rsi_period) 
+ 
+enter_long = ta.crossover(rsi_value, rsi_oversold) 
+exit_long = ta.crossunder(rsi_value, rsi_overbought) 
+enter_short = ta.crossunder(rsi_value, rsi_overbought) 
+exit_short = ta.crossover(rsi_value, rsi_oversold) 
+ 
+plot(rsi_value, title="RSI", color=color.blue) 
+hline(rsi_overbought, "Overbought Level", color=color.red) 
+hline(rsi_oversold, "Oversold Level", color=color.green) 
+ 
+if (tradeLong and enter_long) 
+    strategy.entry("Long", strategy.long) 
+
+if (tradeLong and exit_long) 
+    strategy.close("Long") 
+
+if (tradeShort and enter_short) 
+    strategy.entry("Short", strategy.short) 
+
+if (tradeShort and exit_short) 
+    strategy.close("Short") 
+               
